@@ -1,0 +1,3 @@
+/home/wty/Desktop/work/MycJSON/CMakeFiles/rebuild_cache.dir
+/home/wty/Desktop/work/MycJSON/CMakeFiles/edit_cache.dir
+/home/wty/Desktop/work/MycJSON/CMakeFiles/test.dir
