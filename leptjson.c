@@ -14,7 +14,13 @@ static void lept_parse_whitespace(lept_context* c) {
         p++;
     c->json = p;
 }
-
+static void lept_free(lept_value* v)
+{
+    assert(v!=NULL);
+    if(v->type == LEPT_STRING)
+        free(v->u.s.s);
+    v->type = LEPT_NULL;
+}
 static int lept_parse_null(lept_context* c, lept_value* v) {
     EXPECT(c, 'n');
     if (c->json[0] != 'u' || c->json[1] != 'l' || c->json[2] != 'l')
@@ -43,14 +49,23 @@ static int lept_parse_false(lept_context* c, lept_value* v) {
 static int lept_parse_number(lept_context* c,lept_value* v){
 	char* end;
 	/*\todo validate number*/
-	v->n = strtod(c->json,&end);
+	v->u.n = strtod(c->json,&end);
 	if(c->json == end)
 		return LEPT_PARSE_INVALID_VALUE;
 	c->json = end;
 	v->type = LEPT_NUMBER;
 	return LEPT_PARSE_OK;
 }
-
+static void  lept_set_string(lept_value* v,const char* s,size_t len)
+{
+    assert(v != NULL && (s != NULL || len == 0));
+    lept_free(v);
+    v->u.s.s = (char*)malloc(len+1);
+    memcpy(v->u.s.s,s,len);
+    v->u.s.s[len]='\0';
+    v->u.s.len = len ;
+    v->type = LEPT_STRING;
+}
 static int lept_parse_value(lept_context* c, lept_value* v) {
     switch (*c->json) {
         case 't':  return lept_parse_true(c, v);
@@ -82,5 +97,5 @@ lept_type lept_get_type(const lept_value* v) {
 
 double lept_get_number(const lept_value* v) {
     assert(v != NULL && v->type == LEPT_NUMBER);
-    return v->n;
+    return v->u.n;
 }
