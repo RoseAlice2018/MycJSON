@@ -1,6 +1,7 @@
 #include<stddef.h>
 #include<string>
 #include<math.h>
+#include<iostream>
 typedef enum {JSON_NULL,JSON_FALSE,JSON_TRUE,JSON_NUMBER,JSON_STRING,JSON_ARRAY,JSON_OBJECT}json_type;
 
 struct json_value

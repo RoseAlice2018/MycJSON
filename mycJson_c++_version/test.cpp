@@ -3,23 +3,62 @@
 static int main_ret = 0;
 static int test_count = 0;
 static int test_pass = 0;
-#define EXPECT_EQ_BASE(equality, expect, actual, format) \
-    do {\
-        test_count++;\
-        if (equality)\
-            test_pass++;\
-        else {\
-            fprintf(stderr, "%s:%d: expect: " format " actual: " format "\n", __FILE__, __LINE__, expect, actual);\
-            main_ret = 1;\
-        }\
-    }while (0)    
-
-#define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d")
-#define EXPECT_EQ_DOUBLE(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%.17g")
-#define EXPECT_EQ_STRING(expect, actual)\
-    EXPECT_EQ_BASE(expect  == actual, expect, actual, "%s")
-#define EXPECT_TRUE(actual) EXPECT_EQ_BASE((actual) != 0, "true", "false", "%s")
-#define EXPECT_FALSE(actual) EXPECT_EQ_BASE((actual) == 0, "false", "true", "%s")
+// #define EXPECT_EQ_BASE(equality, expect, actual, format) \
+//     do {\
+//         test_count++;\
+//         if (equality)\
+//             test_pass++;\
+//         else {\
+//             fprintf(stderr, "%s:%d: expect: " format " actual: " format "\n", __FILE__, __LINE__, expect, actual);\
+//             main_ret = 1;\
+//         }\
+//     }while (0) 
+template <class T,class U,class V,class N>
+inline void EXPECT_EQ_BASE(T equality, U expect, V actual, N format)
+{
+    do{
+        test_count++;
+        if(equality)
+            test_pass++;
+        else
+        {
+            std::cout<<__FILE__<<":"<<__LINE__<<" :expect:"<<expect<<":actual: "<<actual<<std::endl;
+            //fprintf(stderr, "%s:%d: expect: " format " actual: " format "\n", __FILE__, __LINE__, expect, actual);
+            main_ret = 1;
+        }        
+    }while(0) ;  
+}
+// #define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d")
+template <class T,class U>
+inline void EXPECT_EQ_INT(T expect,U actual)
+{
+    EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d");
+}
+// #define EXPECT_EQ_DOUBLE(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%.17g")
+template <class T,class U>
+inline void EXPECT_EQ_DOUBLE(T expect, U actual)
+{
+    EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%.17g");
+} 
+// #define EXPECT_EQ_STRING(expect, actual)\
+//     EXPECT_EQ_BASE(expect  == actual, expect, actual, "%s")
+template <class T,class U>
+inline void EXPECT_EQ_STRING(T expect,U actual)
+{
+     EXPECT_EQ_BASE(expect  == actual, expect, actual, "%s");
+}
+// #define EXPECT_TRUE(actual) EXPECT_EQ_BASE((actual) != 0, "true", "false", "%s")
+template <class T>
+inline void EXPECT_TRUE(T actual)
+{
+    EXPECT_EQ_BASE((actual) != 0, "true", "false", "%s");
+}
+// #define EXPECT_FALSE(actual) EXPECT_EQ_BASE((actual) == 0, "false", "true", "%s")
+template <class T>
+inline void EXPECT_FALSE(T actual) 
+{
+    EXPECT_EQ_BASE((actual) == 0, "false", "true", "%s");
+}
 static void test_parse_null() {
     json_value v;
     json_init(&v);
